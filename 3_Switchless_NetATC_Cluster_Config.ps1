@@ -19,7 +19,7 @@
 
     #Cluster Info
         $ClusterName="AzHCICluster"
-        $ClusterIP="100.72.4.124"
+        $ClusterIP="192.168.4.124"
         $ClusterNodes='AzHCI02','AzHCI03','AzHCI04'
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
