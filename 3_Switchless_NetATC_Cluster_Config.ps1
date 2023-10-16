@@ -1,5 +1,5 @@
-﻿#Configure HCI Cluster
-
+﻿#Configure Switchless HCI Cluster
+#Version 1.1
 #Variables
     #Change this to "Full" for Fully-Converged networking
         $FullyNone="None"
