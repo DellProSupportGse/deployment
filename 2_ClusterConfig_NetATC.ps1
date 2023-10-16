@@ -1,5 +1,5 @@
 ﻿#Configure HCI Cluster
-
+#Version 1.2
 #Variables
     #Change this to "Full" for Fully-Converged networking
         $FullyNone="None"
@@ -20,7 +20,7 @@
 
     #Cluster Info
         $ClusterName="AzHCICluster"
-        $ClusterIP="100.72.4.124"
+        $ClusterIP="192.168.4.124"
         $ClusterNodes='AzHCI1','AzHCI2','AzHCI3','AzHCI4'
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
