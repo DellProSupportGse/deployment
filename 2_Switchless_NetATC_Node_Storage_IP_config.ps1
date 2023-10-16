@@ -1,4 +1,6 @@
-﻿ param
+#Configure node IP addresses for switchless
+#Version 1.0
+  param
  (
  [Parameter(Mandatory = $true)]
  [Int]
@@ -65,4 +67,4 @@ $StorageSubnet) }
  } else {
  throw "Not enough Storage NICs available based on cluster size of 
 $SwitchlessClusterNodes"
- }
+ }
