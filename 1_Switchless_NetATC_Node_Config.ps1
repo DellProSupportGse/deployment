@@ -1,14 +1,14 @@
-﻿#Configure Non-Converged with Network ATC
-
+﻿#Configure Non-Converged Switchless with Network ATC
+#Version v1.1.1
 #Varables
     $NodeName="AzHCI1"
         
     #Managment Nics
         $MgmtNic1 = "Integrated NIC 1 Port 1-1"	
         $MgmtNic2 = "Integrated NIC 1 Port 2-1"
-        $MgmtNicIp="100.72.4.125"
-        $MGMTNICGW="100.72.4.1"
-        $DNSIps="100.72.200.10,100.72.200.11,100.73.15.5"
+        $MgmtNicIp="192.168.4.125"
+        $MGMTNICGW="192.168.4.1"
+        $DNSIps="192.168.200.10,192.168.200.11"
         $MgmtPrefixLength="24"
         $Mgmtvlan=""
 
@@ -101,7 +101,9 @@
     Add-MpPreference -ExclusionExtension ".vmcx"
     Add-MpPreference -ExclusionExtension ".vmrs"
     Add-MpPreference -ExclusionExtension ".vmgs" #added
-    Add-MpPreference -ExclusionPath "C:\ClusterStorage"    Add-MpPreference -ExclusionPath "C:\Users\cliusr\Local Settings\Temp" #Added new for Clustering
+    Add-MpPreference -ExclusionPath "C:\ClusterStorage"
+    Add-MpPreference -ExclusionPath "C:\Users\cliusr\Local Settings\Temp" #Added new for Clustering
+
 #Set Spaces Port hardware timeout
         Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\spacePort\Parameters -Name HwTimeout -Value 0x00002710 -Verbose -Confirm:$false
  
