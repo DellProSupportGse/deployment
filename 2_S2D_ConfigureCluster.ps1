@@ -1,5 +1,5 @@
-﻿#Configure HCI Cluster
-
+﻿#Configure S2D Cluster
+#Version 1.1
 #Varables
     
     #Managment Nics
