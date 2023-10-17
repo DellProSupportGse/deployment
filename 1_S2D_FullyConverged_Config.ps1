@@ -1,13 +1,14 @@
-﻿#Reconfigure Non-Converged
+﻿#Reconfigure Fully Converged
+#Version 1.4
 
 #Varables
     
     #Managment Nics
         $MgmtNic1 = "Integrated NIC 1 Port 1-1"	
         $MgmtNic2 = "Integrated NIC 1 Port 2-1"
-        $MgmtNicIp="100.72.4.125"
-        $MGMTNICGW="100.72.4.1"
-        $DNSIps="100.72.200.10,100.72.200.11,100.73.15.5"
+        $MgmtNicIp="192.168.4.125"
+        $MGMTNICGW="192.168.4.1"
+        $DNSIps="192.168.200.10,192.168.200.11"
         $VMSwitchName="Mgmt_vSwitch"
         $MgmtNicName="Management"
         $MgmtPrefixLength="24"
@@ -26,7 +27,9 @@
 
 #Install Roles
     Install-WindowsFeature -Name Hyper-V,Failover-Clustering,Data-Center-Bridging,BitLocker -IncludeManagementTools -IncludeAllSubFeature -Confirm:$false
-#Creates the Virtual Switch     New-VMSwitch -Name $VMSwitchName -AllowManagementOS 0 -NetAdapterName $MgmtNic1 ,$MgmtNic2 -MinimumBandwidthMode Weight -Verbose -Confirm:$false
+
+#Creates the Virtual Switch 
+    New-VMSwitch -Name $VMSwitchName -AllowManagementOS 0 -NetAdapterName $MgmtNic1 ,$MgmtNic2 -MinimumBandwidthMode Weight -Verbose -Confirm:$false
     #Added to resolve the posibility of MAC address conflicts with the Host NICs
     $RMAC=((1..4)|%{"abcdef0123456789".ToCharArray() | Get-Random}) -join ''
     $RMACMin="00155D"+$RMAC+"00"
@@ -120,7 +123,8 @@
     }
 
 #Enable RDMA on storage nics
-   Get-NetAdapter "*storage*" | Enable-NetAdapterRDMA -Name $S1Nic, $S2Nic -Confirm:$false    
+   Get-NetAdapter "*storage*" | Enable-NetAdapterRDMA -Name $S1Nic, $S2Nic -Confirm:$false
+    
 #Enable enable RDMA for Live Migration
     Set-VMHost –VirtualMachineMigrationPerformanceOption SMB -Confirm:$false
 
@@ -151,7 +155,9 @@
     Add-MpPreference -ExclusionExtension ".vmcx"
     Add-MpPreference -ExclusionExtension ".vmrs"
     Add-MpPreference -ExclusionExtension ".vmgs" #added
-    Add-MpPreference -ExclusionPath "C:\ClusterStorage"    Add-MpPreference -ExclusionPath "C:\Users\cliusr\Local Settings\Temp" #Added new for Clustering
+    Add-MpPreference -ExclusionPath "C:\ClusterStorage"
+    Add-MpPreference -ExclusionPath "C:\Users\cliusr\Local Settings\Temp" #Added new for Clustering
+
 #Set Spaces Port hardware timeout
         Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\spacePort\Parameters -Name HwTimeout -Value 0x00002710 -Verbose -Confirm:$false
  
