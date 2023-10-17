@@ -46,7 +46,9 @@ Function EndScript{
         IF($Restart -inotmatch 'y'){EndScript}
         IF($Restart -imatch 'y'){Restart-Computer}
     }
-#Creates the Virtual Switch     New-VMSwitch -Name $VMSwitchName -AllowManagementOS 0 -NetAdapterName $MgmtNic1 ,$MgmtNic2 -MinimumBandwidthMode Weight -Verbose -Confirm:$false
+
+#Creates the Virtual Switch 
+    New-VMSwitch -Name $VMSwitchName -AllowManagementOS 0 -NetAdapterName $MgmtNic1 ,$MgmtNic2 -MinimumBandwidthMode Weight -Verbose -Confirm:$false
     #Added to resolve the posibility of MAC address conflicts with the Host NICs
     $RMAC=((1..4)|%{"abcdef0123456789".ToCharArray() | Get-Random}) -join ''
     $RMACMin="00155D"+$RMAC+"00"
@@ -120,7 +122,8 @@ Function EndScript{
     }
 
 #Enable RDMA
-    Enable-NetAdapterRDMA -Name $S1Nic, $S2Nic -Confirm:$false    
+    Enable-NetAdapterRDMA -Name $S1Nic, $S2Nic -Confirm:$false
+    
 #Rename Storage NICs
     Rename-NetAdapter -Name $S1Nic -NewName $S1NicName -Confirm:$false
     Rename-NetAdapter -Name $S2Nic -NewName $S2NicName -Confirm:$false
@@ -150,7 +153,8 @@ Function EndScript{
     Add-MpPreference -ExclusionExtension ".bin"
     Add-MpPreference -ExclusionExtension ".vmcx"
     Add-MpPreference -ExclusionExtension ".vmrs"
-    Add-MpPreference -ExclusionPath "C:\ClusterStorage"
+    Add-MpPreference -ExclusionPath "C:\ClusterStorage"
+
 #Set Spaces Port hardware timeout
         Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\spacePort\Parameters -Name HwTimeout -Value 0x00002710 -Verbose -Confirm:$false
  
