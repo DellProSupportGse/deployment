@@ -1,5 +1,5 @@
 ﻿#Configure Switchless
-#Version 1.4
+#Version 1.5
 
 #Varables
     
@@ -167,8 +167,8 @@ Function EndScript{
     #$blockCacheMB = (Get-Cluster).BlockCacheSize
     $blockCacheMB = 1024
     $pageFilePath = "C:\pagefile.sys"
-    $initialSize = [Math]::Round(46080 + $blockCacheMB)
-    $maximumSize = [Math]::Round(46080 + $blockCacheMB)
+    $initialSize = [Math]::Round(51200 + $blockCacheMB)
+    $maximumSize = [Math]::Round(51200 + $blockCacheMB)
     $system = Get-WmiObject -Class Win32_ComputerSystem -EnableAllPrivileges
         if ($system.AutomaticManagedPagefile) { 
             $system.AutomaticManagedPagefile = $false 
