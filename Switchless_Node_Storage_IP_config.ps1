@@ -1,5 +1,5 @@
 #Configure node IP addresses for switchless
-#Version 1.1
+#Version 1.2
   param
  (
  [Parameter(Mandatory = $true)]
@@ -7,7 +7,7 @@
  $NodeID
  )
  $SwitchlessNodeID = ${NodeID} #Update to the current Node number being configured.
- $SwitchlessClusterNodes = 3 #Edit with number of nodes in the cluster.
+ $SwitchlessClusterNodes = 4 #Edit with number of nodes in the cluster.
  ##############################################
  #Setup Storage Network for Switchless Topology
  ##############################################
@@ -49,18 +49,15 @@ $StorageSubnet) }
  if ( ($SwitchlessClusterNodes -1) -le $StorageAdapter.Count ) {
  Write-Output 'Configuring Single-Link Full Mesh Switchless Networks'
  for ($i=0;$i -lt ($SwitchlessClusterNodes -1);$i++) {
- Write-Output "Adapter: $(($StorageAdapter)[$i].Description) Name: $
-(($StorageAdapter)[$i].Name) IP: $($SingleStorageIPAddress[$i])"
+ Write-Output "Adapter: $(($StorageAdapter)[$i].Description) Name: $(($StorageAdapter)[$i].Name) IP: $($SingleStorageIPAddress[$i])"
  $null = New-NetIPAddress -InterfaceAlias ($StorageAdapter)[$i].Name -IPAddress $SingleStorageIPAddress[$i] -PrefixLength $StorageAddressPrefix -Verbose
  }
  if ( ($SwitchlessClusterNodes -1)*2 -le $StorageAdapter.Count ) {
  Write-Output 'Configuring Dual-Link Full Mesh Switchless Networks'
  $n = $SwitchlessClusterNodes -1
  for ($i=0;$i -lt ($SwitchlessClusterNodes -1);$i++) {
- Write-Output "Adapter: $(($StorageAdapter)[$n].Description) Name: $
-(($StorageAdapter)[$n].Name) IP: $($DualStorageIPAddress[$i])"
- $null = New-NetIPAddress -InterfaceAlias ($StorageAdapter)[$n].Name 
--IPAddress $DualStorageIPAddress[$i] -PrefixLength $StorageAddressPrefix -Verbose
+ Write-Output "Adapter: $(($StorageAdapter)[$n].Description) Name: $(($StorageAdapter)[$n].Name) IP: $($DualStorageIPAddress[$i])"
+ $null = New-NetIPAddress -InterfaceAlias ($StorageAdapter)[$n].Name -IPAddress $DualStorageIPAddress[$i] -PrefixLength $StorageAddressPrefix -Verbose
  $n++
  }
  }
