@@ -1,5 +1,5 @@
 #Configure node IP addresses for switchless
-#Version 1.0
+#Version 1.1
   param
  (
  [Parameter(Mandatory = $true)]
@@ -18,7 +18,7 @@
 @('172.16.21','172.16.31','172.16.41','172.16.32','172.16.42','172.16.43')
  $StorageAddressPrefix = 29
  $supportedAdapters = @("Mellanox", "QLogic", "E810")
- $StorageAdapter = Get-NetAdapter | Where InterfaceDescription -Match ($supportedAdapters -Join "|") | ? Status -like Up | sort Name | GetNetAdapterHardwareInfo | ? Slot -GE 1 | Sort-Object Slot,Function
+ $StorageAdapter = Get-NetAdapter | Where InterfaceDescription -Match ($supportedAdapters -Join "|") | ? Status -like Up | sort Name | Get-NetAdapterHardwareInfo | ? Slot -GE 1 | Sort-Object Slot,Function
  if ( $StorageAdapter ) {
  Write-Output 'These adapters will be used for storage (dependent on cluster size):'
  Write-Output $($StorageAdapter | Format-Table Name,Description,Slot,Function)
