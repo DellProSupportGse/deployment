@@ -17,12 +17,6 @@
     #Storage Nics
         $S1Nic="SLOT 2 Port 1"
         $S2Nic="SLOT 2 Port 2"
-        $S1NicIp="192.168.21.11"
-        $S2NicIp="192.168.31.11"
-	    $S1PrefixLength="24"
-        $S2PrefixLength="24"
-        $S1vlan="21"
-        $S2vlan="31"
         $S1NicName="Storage1"
         $S2NicName="Storage2"
     
