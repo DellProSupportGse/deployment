@@ -7,7 +7,7 @@
  $NodeID
  )
  $SwitchlessNodeID = ${NodeID} #Update to the current Node number being configured.
- $SwitchlessClusterNodes = 4 #Edit with number of nodes in the cluster.
+ Do{$SwitchlessClusterNodes=Read-Host "Number of Nodes"} until ($SwitchlessClusterNodes -match '^[1-4]$')
  ##############################################
  #Setup Storage Network for Switchless Topology
  ##############################################
