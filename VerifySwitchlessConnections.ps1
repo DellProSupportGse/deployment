@@ -1,3 +1,6 @@
+#Verify S2D/HCI Switchless connections
+#Version 1.1
+#by: Jim Gandy
 $Nodes="AZHCI02","AZHCI03","AZHCI04"
 md c:\dell -Force -ErrorAction SilentlyContinue
 Get-NetAdapter -CimSession $Nodes | Export-Clixml "c:\dell\GetNetAdapter.xml" -Force
