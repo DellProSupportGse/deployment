@@ -49,7 +49,7 @@
     # RDMA/JumboPacket Override for SMB & Management NIC
         $MgmtAdapterPropertyOverrides = New-NetIntentAdapterPropertyOverrides
         $MgmtAdapterPropertyOverrides.NetworkDirect = 0
-        $MgmtAdapterPropertyOverrides.JumboPacket = 5014
+        $MgmtAdapterPropertyOverrides.JumboPacket = 1514
         $StorAdapterPropertyOverrides = New-NetIntentAdapterPropertyOverrides
         $StorAdapterPropertyOverrides.JumboPacket = 9014
         If ((Get-NetAdapter -Name $storage_nics[0] | Select InterfaceDescription) -inotMatch "Mellanox") { 
