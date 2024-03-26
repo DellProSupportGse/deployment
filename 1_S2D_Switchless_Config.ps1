@@ -87,6 +87,8 @@ Function EndScript{
     If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "Mellanox"){
         Set-NetAdapterAdvancedProperty -Name $S1Nic -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
         Set-NetAdapterAdvancedProperty -Name $S2Nic -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
+        Set-NetAdapterAdvancedProperty -Name $S1Nic -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false
+        Set-NetAdapterAdvancedProperty -Name $S2Nic -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false        
     }
 
 # RDMA QOS setting for Mellanox
