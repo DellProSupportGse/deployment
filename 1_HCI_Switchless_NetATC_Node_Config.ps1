@@ -39,7 +39,7 @@
     Install-WindowsFeature -Name Hyper-V, NetworkATC, FS-SMBBW, Failover-Clustering, Data-Center-Bridging, BitLocker, FS-FileServer, RSAT-Clustering-PowerShell -IncludeAllSubFeature -IncludeManagementTools -Confirm:$false
  
 #Disable DCB on Intel Nics
-    Get-NetAdapter -InterfaceDescription *Intel* | Disable-NetAdapterQos -Confirm:$false
+    Get-NetAdapter -InterfaceDescription *X710* | Disable-NetAdapterQos -Confirm:$false
 
 #Max Rx and Tx queues should be max values
     If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "QLogic"){
