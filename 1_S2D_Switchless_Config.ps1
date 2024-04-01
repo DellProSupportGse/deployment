@@ -75,6 +75,10 @@ Function EndScript{
         Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
         Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 2048 -Confirm:$false
     }
+    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "E810"){
+        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
+        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 4096 -Confirm:$false
+    }    
     
 #Enable Jumbo Frames
     Set-NetAdapterAdvancedProperty -Name $S1Nic,$S2Nic -DisplayName "Jumbo Packet" -DisplayValue "9014" -Confirm:$false
