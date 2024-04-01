@@ -64,7 +64,7 @@ Function EndScript{
     Get-NetAdapter "vEthernet ($MgmtNicName)" | Set-DnsClientServerAddress -ServerAddress $DNSIps -Confirm:$false
 
 #Disable DCB on Intel Nics
-    Get-NetAdapter -InterfaceDescription *Intel* | Disable-NetAdapterQos -Confirm:$false
+    Get-NetAdapter -InterfaceDescription *X710* | Disable-NetAdapterQos -Confirm:$false
 
 #Max Rx and Tx queues should be max values
     If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "QLogic"){
