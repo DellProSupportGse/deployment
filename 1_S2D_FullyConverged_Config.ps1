@@ -1,5 +1,5 @@
 ﻿#Reconfigure Fully Converged
-#Version 1.5
+#Version 1.6
 
 #Varables
     
@@ -68,17 +68,17 @@
     Get-NetAdapter -InterfaceDescription *X710* | Disable-NetAdapterQos -Confirm:$false
 
 #Max Rx and Tx queues should be max values
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "QLogic"){
-        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 35000 -Confirm:$false
-        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Transmit Buffers*" -DisplayValue 5000 -Confirm:$false
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "QLogic"){
+        Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 35000 -Confirm:$false
+        Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Transmit Buffers*" -DisplayValue 5000 -Confirm:$false
     }
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "Mellanox"){
-        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
-        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 2048 -Confirm:$false
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "Mellanox"){
+        Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
+        Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 2048 -Confirm:$false
     }
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "E810"){
-        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
-        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 4096 -Confirm:$false
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "E810"){
+        Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
+        Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 4096 -Confirm:$false
     }    
 
 # Exclude iDRAC NIC from Cluster
@@ -86,40 +86,48 @@
     New-ItemProperty -Path HKLM:\system\currentcontrolset\services\clussvc\parameters -Name ExcludeAdaptersByDescription -Value "Remote NDIS based Device" -Force
 
 #Enable Jumbo Frames
-    Set-NetAdapterAdvancedProperty -Name $S1Nic,$S2Nic -DisplayName "Jumbo Packet" -DisplayValue "9014" -Confirm:$false
+    Set-NetAdapterAdvancedProperty -Name $MgmtNic1,$MgmtNic2 -DisplayName "Jumbo Packet" -DisplayValue "9014" -Confirm:$false
+    Set-NetAdapterAdvancedProperty -Name "vEthernet ($S1Nic)" -DisplayName "Jumbo Packet" -DisplayValue "9014 Bytes" -Confirm:$false
+    Set-NetAdapterAdvancedProperty -Name "vEthernet ($S2Nic)" -DisplayName "Jumbo Packet" -DisplayValue "9014 Bytes" -Confirm:$false
+
+#Enable RDMA on Storage vNICs
+	Enable-NetAdapterRdma -Name "vEthernet ($S1Nic)"  -Confirm:$false
+	Enable-NetAdapterRdma -Name "vEthernet ($S2Nic)"  -Confirm:$false
     
 #Set RDMA
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "QLogic" -or (Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "810" ){
-        Set-NetAdapterAdvancedProperty -Name $S1Nic -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
-        Set-NetAdapterAdvancedProperty -Name $S2Nic -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "QLogic" -or (Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "810" ){
+        Set-NetAdapterAdvancedProperty -Name $MgmtNic1 -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
+        Set-NetAdapterAdvancedProperty -Name $MgmtNic2 -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
     }
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "E810"){
-        Set-NetAdapterAdvancedProperty -Name $S1Nic -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
-        Set-NetAdapterAdvancedProperty -Name $S2Nic -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "E810"){
+        Set-NetAdapterAdvancedProperty -Name $MgmtNic1 -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
+        Set-NetAdapterAdvancedProperty -Name $MgmtNic2 -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
     }        
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "Mellanox"){
-        Set-NetAdapterAdvancedProperty -Name $S1Nic -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
-        Set-NetAdapterAdvancedProperty -Name $S2Nic -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
-        Set-NetAdapterAdvancedProperty -Name $S1Nic -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false
-        Set-NetAdapterAdvancedProperty -Name $S2Nic -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "Mellanox"){
+        Set-NetAdapterAdvancedProperty -Name $MgmtNic1 -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
+        Set-NetAdapterAdvancedProperty -Name $MgmtNic2 -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
+        Set-NetAdapterAdvancedProperty -Name $MgmtNic1 -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false
+        Set-NetAdapterAdvancedProperty -Name $MgmtNic2 -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false
     }
 
+
+
 # RDMA QOS setting for Mellanox
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "Mellanox" -or ((Get-PhysicalDisk | Where-Object{$_.MediaType -inotmatch 'HDD'}).count -eq 0)){
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "Mellanox" -or ((Get-PhysicalDisk | Where-Object{$_.MediaType -inotmatch 'HDD'}).count -eq 0)){
         # New QoS policy with a match condition set to 445 (TCP Port 445 is dedicated for SMB)
         # Arguments 3 and 5 to the PriorityValue8021Action parameter indicate the IEEE802.1p 
         # values for SMB and cluster traffic.
-            New-NetQosPolicy -Name 'SMB' –NetDirectPortMatchCondition 445 –PriorityValue8021Action 3 -Confirm:$false
-            New-NetQosPolicy 'Cluster' -Cluster -PriorityValue8021Action 5 -Confirm:$false
+            New-NetQosPolicy -Name 'SMB' -NetDirectPortMatchCondition 445 -PriorityValue8021Action 3 -Confirm:$false
+            New-NetQosPolicy 'Cluster' -Cluster -PriorityValue8021Action 7 -Confirm:$false
         # Map the IEEE 802.1p priority enabled in the system to a traffic class
-            New-NetQosTrafficClass -Name 'SMB' –Priority 3 –BandwidthPercentage 50 –Algorithm ETS
-            New-NetQosTrafficClass -Name 'Cluster' –Priority 5 –BandwidthPercentage 2 –Algorithm ETS
+            New-NetQosTrafficClass -Name 'SMB' -Priority 3 -BandwidthPercentage 50 -Algorithm ETS
+            New-NetQosTrafficClass -Name 'Cluster' -Priority 7 -BandwidthPercentage 2 -Algorithm ETS
         # Configure flow control for the priorities shown in the above table
-            Enable-NetQosFlowControl –Priority 3
-            Disable-NetQosFlowControl –Priority 0,1,2,4,5,6,7
+            Enable-NetQosFlowControl -Priority 3
+            Disable-NetQosFlowControl -Priority 0,1,2,4,5,6,7
         # Enable QoS for the network adapter ports.
-            If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "Mellanox"){
-                Get-NetAdapter $S1Nic,$S2Nic | Enable-NetAdapterQos -Confirm:$false
+            If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "Mellanox"){
+                Get-NetAdapter $MgmtNic1,$MgmtNic2 | Enable-NetAdapterQos -Confirm:$false
             }
         # Disable DCBX Willing mode
             Set-NetQosDcbxSetting -Willing $false -Confirm:$false
@@ -129,10 +137,7 @@
                 Set-VMNetworkAdapter -VMNetworkAdapter $nic -IeeePriorityTag ON -Confirm:$false
             }
     }
-
-#Enable RDMA on storage nics
-   Get-NetAdapter "*storage*" | Enable-NetAdapterRDMA -Name $S1Nic, $S2Nic -Confirm:$false
-    
+ 
 #Enable enable RDMA for Live Migration
     Set-VMHost –VirtualMachineMigrationPerformanceOption SMB -Confirm:$false
 
