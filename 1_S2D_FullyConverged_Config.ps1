@@ -49,8 +49,8 @@
     
 #Sets each vNIC with it own vLAN ID
    IF($Mgmtvlan -ne ""){Set-VMNetworkAdapterVlan -ManagementOS -VMNetworkAdapter $MgmtNicName -Access -VlanId $Mgmtvlan -Confirm:$false}
-   Set-VMNetworkAdapterVlan -VMNetworkAdapter $S1Nic -Access -VlanId $S1vlan -Confirm:$false
-   Set-VMNetworkAdapterVlan -VMNetworkAdapter $S2Nic -Access -VlanId $S2vlan -Confirm:$false
+   Set-VMNetworkAdapterVlan -ManagementOS -VMNetworkAdapterName $S1Nic -Access -VlanId $S1vlan -Confirm:$false
+   Set-VMNetworkAdapterVlan -ManagementOS -VMNetworkAdapterName $S2Nic -Access -VlanId $S2vlan -Confirm:$false
 
 #Configures IP addresses for the vNICs
     Get-NetAdapter "vEthernet ($MgmtNicName)" | New-NetIPAddress -IPAddress $MgmtNicIp  -PrefixLength $MgmtPrefixLength -DefaultGateway $MGMTNICGW -Confirm:$false
