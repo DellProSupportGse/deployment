@@ -48,7 +48,7 @@
     Add-VMNetworkAdapter -ManagementOS -name $S2Nic -SwitchName $VMSwitchName -StaticMacAddress $RMAC -Confirm:$false
     
 #Sets each vNIC with it own vLAN ID
-   IF($Mgmtvlan -ne ""){Set-VMNetworkAdapterVlan -VMNetworkAdapter $MgmtNicName -Access -VlanId $Mgmtvlan -Confirm:$false}
+   IF($Mgmtvlan -ne ""){Set-VMNetworkAdapterVlan -ManagementOS -VMNetworkAdapter $MgmtNicName -Access -VlanId $Mgmtvlan -Confirm:$false}
    Set-VMNetworkAdapterVlan -VMNetworkAdapter $S1Nic -Access -VlanId $S1vlan -Confirm:$false
    Set-VMNetworkAdapterVlan -VMNetworkAdapter $S2Nic -Access -VlanId $S2vlan -Confirm:$false
 
