@@ -1,5 +1,5 @@
 ﻿#Reconfigure Fully Converged
-#Version 1.4
+#Version 1.5
 
 #Varables
     
@@ -48,7 +48,7 @@
     Add-VMNetworkAdapter -ManagementOS -name $S2Nic -SwitchName $VMSwitchName -StaticMacAddress $RMAC -Confirm:$false
     
 #Sets each vNIC with it own vLAN ID
-   IF($Mgmtvlan -ne ""){Set-VMNetworkAdapterVlan -ManagementOS -VMNetworkAdapter $MgmtNicName -Access -VlanId $Mgmtvlan -Confirm:$false}
+   IF($Mgmtvlan -ne ""){Set-VMNetworkAdapterVlan -ManagementOS -VMNetworkAdapterName $MgmtNicName -Access -VlanId $Mgmtvlan -Confirm:$false}
    Set-VMNetworkAdapterVlan -ManagementOS -VMNetworkAdapterName $S1Nic -Access -VlanId $S1vlan -Confirm:$false
    Set-VMNetworkAdapterVlan -ManagementOS -VMNetworkAdapterName $S2Nic -Access -VlanId $S2vlan -Confirm:$false
 
