@@ -1,5 +1,5 @@
 ﻿#Reconfigure Fully Converged
-#Version 1.6
+#Version 1.6.1
 
 #Varables
     
@@ -78,7 +78,10 @@
     }
     If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "E810"){
         Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
-        Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 4096 -Confirm:$false
+	#Added to set Send or Transmit Buffer
+        IF(Get-NetAdapterAdvancedProperty $MgmtNic1,$MgmtNic2 -DisplayName "Send Buffers*" -ErrorAction SilentlyContinue){
+		Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 4096 -Confirm:$false}
+  	    else{Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Transmit Buffers*" -DisplayValue 512 -Confirm:$false}
     }    
 
 # Exclude iDRAC NIC from Cluster
@@ -109,9 +112,6 @@
         Set-NetAdapterAdvancedProperty -Name $MgmtNic1 -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false
         Set-NetAdapterAdvancedProperty -Name $MgmtNic2 -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false
     }
-
-
-
 # RDMA QOS setting for Mellanox
     If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "Mellanox" -or ((Get-PhysicalDisk | Where-Object{$_.MediaType -inotmatch 'HDD'}).count -eq 0)){
         # New QoS policy with a match condition set to 445 (TCP Port 445 is dedicated for SMB)
@@ -137,7 +137,7 @@
                 Set-VMNetworkAdapter -VMNetworkAdapter $nic -IeeePriorityTag ON -Confirm:$false
             }
     }
- 
+
 #Enable enable RDMA for Live Migration
     Set-VMHost –VirtualMachineMigrationPerformanceOption SMB -Confirm:$false
 
