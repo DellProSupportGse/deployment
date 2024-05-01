@@ -59,7 +59,10 @@
     }
     If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "E810"){
         Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
-        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Transmit Buffers*" -DisplayValue 4096 -Confirm:$false
+	#Added to set Send or Transmit Buffer
+        IF(Get-NetAdapterAdvancedProperty $S1Nic,$S2Nic -DisplayName "Send Buffers*" -ErrorAction SilentlyContinue){
+		Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 4096 -Confirm:$false}
+  	else{Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Transmit Buffers*" -DisplayValue 512 -Confirm:$false}
     }    
 
 # Exclude iDRAC NIC from Cluster
