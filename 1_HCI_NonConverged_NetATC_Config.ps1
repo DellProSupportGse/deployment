@@ -1,5 +1,5 @@
 ﻿#Configure Non-Converged with Network ATC
-#Version 1.1.1
+#Version 1.1.2
 #Varables
     $NodeName="AzHCI1"
         
@@ -59,7 +59,7 @@
     }
     If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "E810"){
         Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
-        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 4096 -Confirm:$false
+        Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Transmit Buffers*" -DisplayValue 4096 -Confirm:$false
     }    
 
 # Exclude iDRAC NIC from Cluster
