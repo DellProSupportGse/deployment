@@ -67,6 +67,9 @@
 #Disable DCB on Intel Nics
     Get-NetAdapter -InterfaceDescription *X710* | Disable-NetAdapterQos -Confirm:$false
 
+#Set power profile to High Performance
+	powercfg /setactive SCHEME_MIN
+
 #Max Rx and Tx queues should be max values
     If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "QLogic"){
         Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 35000 -Confirm:$false
