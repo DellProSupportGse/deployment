@@ -28,6 +28,11 @@
     #Set DNS -comma delimit 2nd DNS Server
     Set-DnsClientServerAddress -InterfaceAlias $MgmtNic1 -ServerAddresses $DNSIps -Confirm:$false
 
+# Exclude iDRAC NIC from Cluster
+    $NDISDesc=(Get-NetAdapter | Where-Object{$_.InterfaceDescription -imatch "NDIS"}).InterfaceDescription
+    New-Item -Path HKLM:\system\currentcontrolset\services\clussvc\parameters -Force
+    New-ItemProperty -Path HKLM:\system\currentcontrolset\services\clussvc\parameters -Name ExcludeAdaptersByDescription -Value $NDISDesc -Force
+    
 #Enable Remote Desktop
     Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
     Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
