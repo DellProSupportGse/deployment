@@ -25,6 +25,11 @@
             
 #Create cluster
     New-Cluster -Name $ClusterName -Node $ClusterNodes -StaticAddress $ClusterIP
+    
+# Exclude iDRAC NIC from Cluster
+    $NDISDesc=(Get-NetAdapter | Where-Object{$_.InterfaceDescription -imatch "NDIS"}).InterfaceDescription
+    New-Item -Path HKLM:\system\currentcontrolset\services\clussvc\parameters -Force
+    New-ItemProperty -Path HKLM:\system\currentcontrolset\services\clussvc\parameters -Name ExcludeAdaptersByDescription -Value $NDISDesc -Force
 
 #Enable S2d
     Enable-Clusters2d            
