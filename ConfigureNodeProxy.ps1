@@ -1,5 +1,5 @@
 # This configuration is used to set up the proxy across all locations on a Windows server to ensure the proxy functions properly.
-# Version 1.0
+# Version 1.1
 # By: Jim Gandy
 
  # Proxy variables
@@ -15,7 +15,7 @@
 		$env:HTTP_PROXY = [System.Environment]::GetEnvironmentVariable("HTTP_PROXY", "Machine")
 		#ProxyBypass MUST use comma , delimiter
 		[Environment]::SetEnvironmentVariable("NO_PROXY", $noproxylist, "Machine")
-		$env:noproxylist = [System.Environment]::GetEnvironmentVariable("noproxylist", "Machine")
+		$env:NO_PROXY = [System.Environment]::GetEnvironmentVariable("NO_PROXY", "Machine")
 	}Catch{
 		Write-Host "    ERROR: Failed to set Environment variables" -ForegroundColor Red
 	}
