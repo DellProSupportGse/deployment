@@ -5,7 +5,7 @@
  # Proxy variables
 		Clear-Host
 		$ProxyServer=Read-Host "Please enter the Proxy Sever: example: http://myproxyserver.com:8080" 
-		$noproxylist=Read-Host "Please enter the Proxy By-Pass List: example: localhost,127.0.0.1,*.DomainShortName.com,*.DomainFQDN.com,wacserver,nodeshort,nodefqdn,nodeipaddress"
+		$noproxylist=Read-Host "Please enter the Proxy By-Pass List: example: localhost,127.0.0.1,*.DomainShortName.com,*.DomainFQDN.com,wacserver,nodeshort,nodefqdn,nodeipaddress,idracIPs,iSMiDRACIPs,infrastructureIps,ClusterShortName,ClusterFQDN"
 
 	Write-Host "    Environment variables..."
 	Try	{
