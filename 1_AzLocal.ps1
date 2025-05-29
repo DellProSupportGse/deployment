@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.3
+# v1.4
 ### Fill out this section before you run it :)###
 $N = "AZLNode1"
 $M1 = "Embedded NIC 1"
@@ -23,42 +23,14 @@ Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name 
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 if ($env:COMPUTERNAME -ne $N) { Rename-Computer -NewName $N -Confirm:$false }
 
-# Detect Dell Golden Image
-$G=(Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation").SupportProvider -imatch "Dell"
-if (-not $G) {
-    $H = @{
-        "e8"   = "https://dl.dell.com/FOLDER11890492M/1/Network_Driver_6JHVK_WN64_23.0.0_A00.EXE"
-        "Mell" = "https://dl.dell.com/FOLDER11591518M/2/Network_Driver_G6M58_WN64_24.04.03_01.EXE"
-    }
-    Get-NetAdapter | ForEach-Object {
-        $U = if ($_.InterfaceDescription -match "e8") { $H["e8"] } elseif ($_.InterfaceDescription -match "Mell") { $H["Mell"] }
-        if ($U) {
-            Try {
-                (New-Object Net.WebClient).DownloadFile($U, "$F\Network_Driver.exe")
-                Start-Process "$F\Network_Driver.exe" -ArgumentList "/s" -NoNewWindow -Wait
-            } Catch { Write-Warning "Failed to install driver for $($_.InterfaceDescription)" }
-        }
-    }
-    # Rename NICs for Easier Identification
-    Get-NetAdapterHardwareInfo | % {
-        $I = if ($_.Function -ne $null) { $_.Function + 1 } else { 1 }
-        $W = if ($_.Slot) { "Slot $($_.Slot) Port $I" } elseif ($_.PCIDeviceLabelString) { $_.PCIDeviceLabelString } else { "NIC$I" }
-        if ($_.Name -ne $W) {
-            try { Rename-NetAdapter -Name $_.Name -NewName $W -ErrorAction Stop } catch { Write-Warning "Failed to rename '$($_.Name)': $_" }
-        }
-    }
-}
-
 # Create Azure Arc Registration Script
 $A = "C:\dell\Arc-Register.ps1"
 $Pp = if ($X) { "-Proxy `"$X`"" } else { "" }
-$C = if (-not $G) {
-@"
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:`$false
-@("Az.Accounts -MinimumVersion 4.0.2", "AzStackHci.EnvironmentChecker -MinimumVersion 1.2100.3000.663") | % {
-    Install-Module -Name `$_ -Force -AllowClobber -SkipPublisherCheck -Confirm:`$false
-}
-"@} else { "" }
+
+# Uninstall all versions except 4.0.2
+Get-InstalledModule -Name Az.Accounts -AllVersions -ErrorAction SilentlyContinue | Where-Object { $_.Version -ne '4.0.2' } | ForEach-Object { Uninstall-Module -Name $_.Name -RequiredVersion $_.Version -Force -ErrorAction SilentlyContinue }
+# Ensure 4.0.2 is installed
+IF(-not (Get-InstalledModule -Name Az.Accounts -AllVersions | Where-Object { $_.Version -eq '4.0.2'})){Install-Module -Name Az.Accounts  -RequiredVersion "4.0.2" -Force -AllowClobber -SkipPublisherCheck -Confirm:$false -ErrorAction SilentlyContinue}}
 
 $C += @"
 Connect-AzAccount -SubscriptionId `"$S`" -TenantId `"$T`" -DeviceCode
