@@ -1,12 +1,12 @@
 # This configuration is used to set up the proxy across all locations on a Windows server to ensure the proxy functions properly.
-# Version 1.2
+# Version 1.3
 # By: Jim Gandy
 # Just run the script. It will ask you for what it needs?
 
  # Proxy variables
 		Clear-Host
-		$ProxyServer=Read-Host "Please enter the Proxy Sever: example: http://myproxyserver.com:8080" 
-		$noproxylist=Read-Host "Please enter the Proxy By-Pass List: example: *.svc,localhost,127.0.0.1,*.DomainShortName.com,*.DomainFQDN.com,wacserver,nodeshort,nodefqdn,nodeipaddress,idracIPs,iSMiDRACIPs,infrastructureIps,ClusterShortName,ClusterFQDN"
+		$ProxyServer="http://myproxyserver.com:8080" 
+		$noproxylist="*.svc,localhost,127.0.0.1,*.DomainShortName.com,*.DomainFQDN.com,wacserver,nodeshort,nodefqdn,nodeipaddress,idracIPs,iSMiDRACIPs,infrastructureIps,ClusterShortName,ClusterFQDN"
 
 	Write-Host "    Environment variables..."
 	Try	{
