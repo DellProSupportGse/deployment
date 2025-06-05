@@ -7,7 +7,7 @@ $MI = "192.168.1.101"
 $GW = "192.168.1.1"
 $D = "192.168.1.1,192.168.1.2"
 $P = 24
-$V = "0"
+$V = ""
 $S = "YourSubscriptionID"
 $R = "YourResourceGroupName"
 $Z = "eastus"
@@ -18,8 +18,8 @@ Start-Transcript -Path "$F\Setup-$(Get-Date -Format "yyyyMMdd-HHmmss").txt" -App
 
 # Network Config
 Get-NetAdapter | ? InterfaceDescription -inotmatch "NDIS" | Set-NetIPInterface -Dhcp Disabled
+IF($V -ne ""){Set-NetAdapter -InterfaceAlias $M1 -VlanId $V -Confirm:$false}
 New-NetIPAddress -InterfaceAlias $M1 -IPAddress $MI -PrefixLength $P -DefaultGateway $GW -Confirm:$false
-Set-NetAdapter -InterfaceAlias $M1 -VlanId $V -Confirm:$false
 Set-DnsClientServerAddress -InterfaceAlias $M1 -ServerAddresses $D -Confirm:$false
 Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
