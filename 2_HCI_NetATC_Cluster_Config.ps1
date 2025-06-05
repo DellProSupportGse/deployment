@@ -1,5 +1,5 @@
 ﻿#Configure HCI Cluster
-#Version 1.2
+#Version 1.3
 #Variables
     #Change this to "Full" for Fully-Converged networking
         $FullyNone="None"
@@ -39,9 +39,9 @@
     }
     
     # Exclude iDRAC NIC from Cluster
-    $NDISDesc=(Get-NetAdapter | Where-Object{$_.InterfaceDescription -imatch "NDIS"}).InterfaceDescription
-    New-Item -Path HKLM:\system\currentcontrolset\services\clussvc\parameters -Force
-    New-ItemProperty -Path HKLM:\system\currentcontrolset\services\clussvc\parameters -Name ExcludeAdaptersByDescription -Value $NDISDesc -Force
+        $NDISDesc=(Get-NetAdapter | Where-Object{$_.InterfaceDescription -imatch "NDIS"}).InterfaceDescription
+        IF(Test-Path -Path HKLM:\system\currentcontrolset\services\clussvc\parameters){
+    	New-ItemProperty -Path HKLM:\system\currentcontrolset\services\clussvc\parameters -Name ExcludeAdaptersByDescription -Value $NDISDesc -Force}
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Setup NetworkATC on the Cluster
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
