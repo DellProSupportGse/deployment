@@ -46,6 +46,7 @@
     # Run only if CIDR detected
     if ($noproxylist -match '\d{1,3}(\.\d{1,3}){3}/\d{1,2}') {
         $CidrNoProxyList = Convert-CidrInListToWildcard $noproxylist
+	Write-ho
     }
 
 	Write-Host "    Environment variables..."
