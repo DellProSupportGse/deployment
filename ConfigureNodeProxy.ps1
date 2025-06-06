@@ -1,12 +1,52 @@
 # This configuration is used to set up the proxy across all locations on a Windows server to ensure the proxy functions properly.
-# Version 1.3
+# Version 1.4
 # By: Jim Gandy
 # Just run the script. It will ask you for what it needs?
 
  # Proxy variables
 		Clear-Host
 		$ProxyServer="http://myproxyserver.com:8080" 
-		$noproxylist="*.svc,localhost,127.0.0.1,*.DomainShortName.com,*.DomainFQDN.com,wacserver,nodeshort,nodefqdn,nodeipaddress,idracIPs,iSMiDRACIPs,infrastructureIps,ClusterShortName,ClusterFQDN"
+        # Please use CIDR notation for IP ranges EX: 192.168.1.0/24
+		$noproxylist="192.168.1.0/24,*.svc,localhost,127.0.0.1,*.DomainShortName.com,*.DomainFQDN.com,wacserver,nodeshort,nodefqdn,nodeipaddress,idracIPs,iSMiDRACIPs,infrastructureIps,ClusterShortName,ClusterFQDN"
+
+    # Check for semicolan(;) delimitation and change the comma(,)
+    $noproxylist = $noproxylist -replace ";",","
+
+    # Convert wildcards to CIDR
+    # Ref: https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings-23h2?view=azloc-2504#environment-variables-proxy-bypass-list-string-considerations
+    function Convert-CidrInListToWildcard {
+        param (
+            [string]$inputList
+        )
+
+        $outputList = $inputList -split ',' | ForEach-Object {
+            if ($_ -match '^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d+)$') {
+                $a, $b, $c, $d, $prefix = $matches[1..5]
+                $prefix = [int]$prefix
+
+                if ($prefix -ge 1 -and $prefix -le 7) {
+                    '*.*.*.*'
+                } elseif ($prefix -ge 8 -and $prefix -le 15) {
+                    "$a.*.*.*"
+                } elseif ($prefix -ge 16 -and $prefix -le 23) {
+                    "$a.$b.*.*"
+                } elseif ($prefix -eq 24 -and $prefix -le 32) {
+                    "$a.$b.$c.*"
+                } else {
+                    $_  # Leave it untouched if not in range
+                }
+            } else {
+                $_  # Not a CIDR, leave unchanged
+            }
+        }
+
+        return ($outputList -join ',')
+    }
+
+    # Run only if CIDR detected
+    if ($noproxylist -match '\d{1,3}(\.\d{1,3}){3}/\d{1,2}') {
+        $CidrNoProxyList = Convert-CidrInListToWildcard $noproxylist
+    }
 
 	Write-Host "    Environment variables..."
 	Try	{
@@ -15,7 +55,7 @@
 		[Environment]::SetEnvironmentVariable("HTTP_PROXY",$ProxyServer, "Machine")
 		$env:HTTP_PROXY = [System.Environment]::GetEnvironmentVariable("HTTP_PROXY", "Machine")
 		#ProxyBypass MUST use comma , delimiter
-		[Environment]::SetEnvironmentVariable("NO_PROXY", $noproxylist, "Machine")
+        IF($CidrNoProxyList){[Environment]::SetEnvironmentVariable("NO_PROXY", $CidrNoProxyList, "Machine")}Else{[Environment]::SetEnvironmentVariable("NO_PROXY", $NoProxyList, "Machine")}
 		$env:NO_PROXY = [System.Environment]::GetEnvironmentVariable("NO_PROXY", "Machine")
 	}Catch{
 		Write-Host "    ERROR: Failed to set Environment variables" -ForegroundColor Red
