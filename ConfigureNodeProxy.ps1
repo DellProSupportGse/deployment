@@ -4,9 +4,9 @@
 # Just run the script. It will ask you for what it needs?
 
  # Proxy variables
-		Clear-Host
+	# Update with your Proxy information before running
 		$ProxyServer="http://myproxyserver.com:8080" 
-        # Please use CIDR notation for IP ranges EX: 192.168.1.0/24
+        # Please use CIDR notation for IP ranges EX: 192.168.1.1-254 = 192.168.1.0/24
 		$noproxylist="192.168.1.0/24,*.svc,localhost,127.0.0.1,*.DomainShortName.com,*.DomainFQDN.com,wacserver,nodeshort,nodefqdn,nodeipaddress,idracIPs,iSMiDRACIPs,infrastructureIps,ClusterShortName,ClusterFQDN"
 
     # Check for semicolan(;) delimitation and change the comma(,)
