@@ -1,5 +1,5 @@
 # This configuration is used to set up the proxy across all locations on a Windows server to ensure the proxy functions properly.
-# Version 1.4
+# Version 1.5
 # By: Jim Gandy
 # Just run the script. It will ask you for what it needs?
 
@@ -45,8 +45,11 @@
 
     # Run only if CIDR detected
     if ($noproxylist -match '\d{1,3}(\.\d{1,3}){3}/\d{1,2}') {
-        $CidrNoProxyList = Convert-CidrInListToWildcard $noproxylist
-	Write-ho
+    	Write-Host "Converting CIDR to Wildcard..."
+	$cidrnoproxylist = $noproxylist
+        $NoProxyList = Convert-CidrInListToWildcard $noproxylist
+	Write-Host "CIDR:" $cidrnoproxylist
+ 	Write-host "Wildcard:" $noproxylist
     }
 
 	Write-Host "    Environment variables..."
@@ -56,7 +59,7 @@
 		[Environment]::SetEnvironmentVariable("HTTP_PROXY",$ProxyServer, "Machine")
 		$env:HTTP_PROXY = [System.Environment]::GetEnvironmentVariable("HTTP_PROXY", "Machine")
 		#ProxyBypass MUST use comma , delimiter
-        IF($CidrNoProxyList){[Environment]::SetEnvironmentVariable("NO_PROXY", $CidrNoProxyList, "Machine")}Else{[Environment]::SetEnvironmentVariable("NO_PROXY", $NoProxyList, "Machine")}
+        IF($cidrnoproxylist){[Environment]::SetEnvironmentVariable("NO_PROXY", $cidrnoproxylist, "Machine")}Else{[Environment]::SetEnvironmentVariable("NO_PROXY", $NoProxyList, "Machine")}
 		$env:NO_PROXY = [System.Environment]::GetEnvironmentVariable("NO_PROXY", "Machine")
 	}Catch{
 		Write-Host "    ERROR: Failed to set Environment variables" -ForegroundColor Red
