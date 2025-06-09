@@ -1,7 +1,6 @@
 # This configuration is used to set up the proxy across all locations on a Windows server to ensure the proxy functions properly.
 # Version 1.5
 # By: Jim Gandy
-# Just run the script. It will ask you for what it needs?
 
  # Proxy variables
 	# Update with your Proxy information before running
