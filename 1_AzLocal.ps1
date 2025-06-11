@@ -1,6 +1,7 @@
 # Configure Node & Azure Arc Settings
-# v1.6
+# v1.7
 ### Fill out this section before you run it :)###
+#NOTE: Verify virtual media is disconnect
 $N = "AZLNode1"
 $M1 = "Embedded NIC 1"
 $MI = "192.168.1.101"
