@@ -1,7 +1,7 @@
 # Configure Node & Azure Arc Settings
-# v1.7
+# v1.8
 ### Fill out this section before you run it :)###
-#NOTE: Verify virtual media is disconnect
+
 $N = "AZLNode1"
 $M1 = "Embedded NIC 1"
 $MI = "192.168.1.101"
@@ -24,17 +24,15 @@ IF(!(Get-NetIPAddress $MI)){New-NetIPAddress -InterfaceAlias $M1 -IPAddress $MI 
 Set-DnsClientServerAddress -InterfaceAlias $M1 -ServerAddresses $D -Confirm:$false
 IF($V -ne ""){Set-NetAdapter -InterfaceAlias $M1 -VlanId $V -Confirm:$false}
 Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
-Enable-NetFirewallRule -DisplayGroup "Remote Desktop","FPS-ICMP4-ERQ-In"
+Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 if ($env:COMPUTERNAME -ne $N) { Rename-Computer -NewName $N -Confirm:$false }
+
+# Eject CDROM
+(New-Object -ComObject Shell.Application).NameSpace(17).ParseName((Get-WmiObject Win32_CDROMDrive).Drive).InvokeVerb("Eject")
 
 # Create Azure Arc Registration Script
 $A = "C:\dell\Arc-Register.ps1"
 $Pp = if ($X) { "-Proxy `"$X`"" } else { "" }
-
-# Uninstall all versions except 4.0.2
-Get-InstalledModule -Name Az.Accounts -AllVersions -ErrorAction SilentlyContinue | Where-Object { $_.Version -ne '4.0.2' } | ForEach-Object { Uninstall-Module -Name $_.Name -RequiredVersion $_.Version -Force -ErrorAction SilentlyContinue }
-# Ensure 4.0.2 is installed
-IF(-not (Get-InstalledModule -Name Az.Accounts -AllVersions | Where-Object { $_.Version -eq '4.0.2'})){Install-Module -Name Az.Accounts  -RequiredVersion "4.0.2" -Force -AllowClobber -SkipPublisherCheck -Confirm:$false -ErrorAction SilentlyContinue}
 
 $C += @"
 Connect-AzAccount -SubscriptionId `"$S`" -TenantId `"$T`" -DeviceCode
