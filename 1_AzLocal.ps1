@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.8
+# v1.9
 ### Fill out this section before you run it :)###
 
 $N = "AZLNode1"
@@ -9,6 +9,7 @@ $GW = "192.168.1.1"
 $D = "192.168.1.1,192.168.1.2"
 $P = 24
 $V = ""
+$NT = ""
 $S = "YourSubscriptionID"
 $R = "YourResourceGroupName"
 $Z = "eastus"
@@ -26,6 +27,8 @@ IF($V -ne ""){Set-NetAdapter -InterfaceAlias $M1 -VlanId $V -Confirm:$false}
 Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 if ($env:COMPUTERNAME -ne $N) { Rename-Computer -NewName $N -Confirm:$false }
+Set-TimeZone -Id "UTC"
+if($NT){w32tm /config /manualpeerlist:$NT /syncfromflags:MANUAL /reliable:yes /update; Restart-Service w32time; w32tm /resync /nowait; w32tm /query /source}
 
 # Eject CDROM
 (New-Object -ComObject Shell.Application).NameSpace(17).ParseName((Get-WmiObject Win32_CDROMDrive).Drive).InvokeVerb("Eject")
