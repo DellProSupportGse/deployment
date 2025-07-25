@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.9
+# v1.10
 ### Fill out this section before you run it :)###
 
 $N = "AZLNode1"
@@ -21,9 +21,9 @@ Start-Transcript -Path "$F\Setup-$(Get-Date -Format "yyyyMMdd-HHmmss").txt" -App
 # Network Config
 Get-NetAdapter | ? InterfaceDescription -inotmatch "NDIS" | Set-NetIPInterface -Dhcp Disabled
 Get-NetAdapter | ? status -ne "up" | Disable-NetAdapter -Confirm:$false
-IF(!(Get-NetIPAddress $MI)){New-NetIPAddress -InterfaceAlias $M1 -IPAddress $MI -PrefixLength $P -DefaultGateway $GW -Confirm:$false}
+IF(!(Get-NetIPAddress $MI)){New-NetIPAddress -InterfaceAlias $M1 -IPAddress $MI -PrefixLength $P -DefaultGateway $GW  -ErrorAction SilentlyContinue -Confirm:$false}
 Set-DnsClientServerAddress -InterfaceAlias $M1 -ServerAddresses $D -Confirm:$false
-IF($V -ne ""){Set-NetAdapter -InterfaceAlias $M1 -VlanId $V -Confirm:$false}
+IF($V -ne ""){Set-NetAdapter -InterfaceAlias $((($M1 -split " ")[0..1] -join " ")+"*") -VlanId $V -Confirm:$false}
 Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 if ($env:COMPUTERNAME -ne $N) { Rename-Computer -NewName $N -Confirm:$false }
