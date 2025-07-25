@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.10
+# v1.11
 ### Fill out this section before you run it :)###
 
 $N = "AZLNode1"
@@ -42,12 +42,12 @@ Connect-AzAccount -SubscriptionId `"$S`" -TenantId `"$T`" -DeviceCode
 `$AT = (Get-AzAccessToken -WarningAction SilentlyContinue).Token
 `$I = (Get-AzContext).Account.Id
 Invoke-AzStackHciArcInitialization -SubscriptionID `"$S`" -ResourceGroup `"$R`" -TenantID `"$T`" -Region `"$Z`" -Cloud "AzureCloud" -ArmAccessToken `$AT -AccountID `$I $Pp
-Unregister-ScheduledTask -TaskName "AzureArcRegister" -Confirm:`$false
+Unregister-ScheduledTask -TaskName "DellAzureArcRegist*" -Confirm:`$false
 "@
 $C | Set-Content $A
 
 # Schedule Task for Azure Arc Registration
-Register-ScheduledTask -TaskName "AzureArcRegister" -Trigger (New-ScheduledTaskTrigger -AtLogon) `
+Register-ScheduledTask -TaskName "DellAzureArcRegister" -Trigger (New-ScheduledTaskTrigger -AtLogon) `
     -Action (New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-ExecutionPolicy Bypass -File `"$A`"") `
     -RunLevel Highest -Force
 
