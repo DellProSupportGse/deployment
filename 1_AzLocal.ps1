@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.12
+# v1.13
 ### Fill out this section before you run it :)###
 
 $N = "AZLNode1"
@@ -21,7 +21,7 @@ Start-Transcript -Path "$F\Setup-$(Get-Date -Format "yyyyMMdd-HHmmss").txt" -App
 # Network Config
 Get-NetAdapter | ? InterfaceDescription -inotmatch "NDIS" | Set-NetIPInterface -Dhcp Disabled
 Get-NetAdapter | ? status -ne "up" | Disable-NetAdapter -Confirm:$false
-IF(!([System.Net.IPAddress]::TryParse($MI, [ref]$null))){New-NetIPAddress -InterfaceAlias $M1 -IPAddress $MI -PrefixLength $P -DefaultGateway $GW  -ErrorAction SilentlyContinue -Confirm:$false}
+IF((gip $M1).ipv4address.ipaddress -ne $MI){New-NetIPAddress -InterfaceAlias $M1 -IPAddress $MI -PrefixLength $P -DefaultGateway $GW  -ErrorAction SilentlyContinue -Confirm:$false}
 Set-DnsClientServerAddress -InterfaceAlias $M1 -ServerAddresses $D -Confirm:$false
 IF($V -ne ""){Set-NetAdapter -InterfaceAlias $((($M1 -split " ")[0..1] -join " ")+"*") -VlanId $V -Confirm:$false}
 Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
