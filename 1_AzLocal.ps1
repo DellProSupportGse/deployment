@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.14
+# v1.15
 #By: Jim Gandy
 ### Fill out this section before you run it :)###
 
@@ -15,6 +15,7 @@ $S = "YourSubscriptionID"
 $R = "YourResourceGroupName"
 $Z = "eastus"
 $T = "YourTenantID"
+$AGW = "" #Add you ARC gateway
 $X = "" # Leave this blank if no proxy is required
 $F = "C:\dell"; New-Item $F -ItemType Directory -Force | Out-Null
 Start-Transcript -Path "$F\Setup-$(Get-Date -Format "yyyyMMdd-HHmmss").txt" -Append
@@ -38,12 +39,19 @@ IF((Get-WmiObject Win32_CDROMDrive).Drive){(New-Object -ComObject Shell.Applicat
 $A = "C:\dell\Arc-Register.ps1"
 $Pp = if ($X) { "-Proxy `"$X`"" } else { "" }
 
+if (!($AGW)) {
 $C += @"
-Connect-AzAccount -SubscriptionId `"$S`" -TenantId `"$T`" -DeviceCode
-`$AT = (Get-AzAccessToken -WarningAction SilentlyContinue).Token
-`$I = (Get-AzContext).Account.Id
-Invoke-AzStackHciArcInitialization -SubscriptionID `"$S`" -ResourceGroup `"$R`" -TenantID `"$T`" -Region `"$Z`" -Cloud "AzureCloud" -ArmAccessToken `$AT -AccountID `$I $Pp
+Invoke-AzStackHciArcInitialization -SubscriptionID `"$S`" -ResourceGroup `"$R`" -TenantID `"$T`" -Region `"$Z`" -Cloud "AzureCloud"
+"@}
+if ($AGW) {
+$C += @"
+`$ArcGwId = "/subscriptions/$S/resourceGroups/$R/providers/Microsoft.HybridCompute/gateways/$AGW"
+Invoke-AzStackHciArcInitialization -SubscriptionID `"$S`" -ResourceGroup `"$R`" -TenantID `"$T`" -Region `"$Z`" -Cloud "AzureCloud" -ArcGatewayID `$ArcGwId
+Start-Sleep 5
+"@}
+$C += @"
 Unregister-ScheduledTask -TaskName "DellAzureArcRegist*" -Confirm:`$false
+pause
 "@
 $C | Set-Content $A
 
