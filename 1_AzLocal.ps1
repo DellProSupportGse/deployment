@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.15
+# v1.16
 #By: Jim Gandy
 ### Fill out this section before you run it :)###
 
@@ -50,6 +50,7 @@ Invoke-AzStackHciArcInitialization -SubscriptionID `"$S`" -ResourceGroup `"$R`" 
 Start-Sleep 5
 "@}
 $C += @"
+
 Unregister-ScheduledTask -TaskName "DellAzureArcRegist*" -Confirm:`$false
 pause
 "@
