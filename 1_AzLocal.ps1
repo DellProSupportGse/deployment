@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.16
+# v1.17
 #By: Jim Gandy
 ### Fill out this section before you run it :)###
 
@@ -17,6 +17,7 @@ $Z = "eastus"
 $T = "YourTenantID"
 $AGW = "" #Add you ARC gateway
 $X = "" # Leave this blank if no proxy is required
+$TV = "" # Populate this field if you need a specific version
 $F = "C:\dell"; New-Item $F -ItemType Directory -Force | Out-Null
 Start-Transcript -Path "$F\Setup-$(Get-Date -Format "yyyyMMdd-HHmmss").txt" -Append
 
@@ -47,8 +48,12 @@ if ($AGW) {
 $C += @"
 `$ArcGwId = "/subscriptions/$S/resourceGroups/$R/providers/Microsoft.HybridCompute/gateways/$AGW"
 Invoke-AzStackHciArcInitialization -SubscriptionID `"$S`" -ResourceGroup `"$R`" -TenantID `"$T`" -Region `"$Z`" -Cloud "AzureCloud" -ArcGatewayID `$ArcGwId
-Start-Sleep 5
 "@}
+if ($TV){
+$C += @"
+ -TargetSolutionVersion `$TV
+"@
+}
 $C += @"
 
 Unregister-ScheduledTask -TaskName "DellAzureArcRegist*" -Confirm:`$false
