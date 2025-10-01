@@ -17,7 +17,7 @@ $Z = "eastus"
 $T = "YourTenantID"
 $AGW = "" #Add you ARC gateway
 $X = "" # Leave this blank if no proxy is required
-$TV = "" # Populate this field if you need a specific version
+$TV = "" # Populate this field if you need a specific version https://learn.microsoft.com/en-us/azure/azure-local/release-information-23h2?view=azloc-2507&tabs=OS-build-25398-xxxx#supported-versions-of-azure-local
 $F = "C:\dell"; New-Item $F -ItemType Directory -Force | Out-Null
 Start-Transcript -Path "$F\Setup-$(Get-Date -Format "yyyyMMdd-HHmmss").txt" -Append
 
