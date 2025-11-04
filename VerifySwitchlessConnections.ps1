@@ -9,10 +9,10 @@ Get-NetNeighbor -CimSession $Nodes | Export-Clixml "c:\dell\GetNetNeighbor.xml" 
 Get-NetAdapterAdvancedProperty -CimSession $Nodes | Export-Clixml "c:\dell\GetNetAdapterAdvancedProperty.xml" -Force
 
 $SDDCPath = "c:\dell"
-$GetNetAdapter=Get-ChildItem -Path $SDDCPath -Filter GetNetadapter.xml -Recurse -Depth 2 | Import-Clixml | Where-Object{($_.InterfaceDescription -imatch "QLogic") -or ($_.InterfaceDescription -imatch "NVidia") -or ($_.InterfaceDescription -imatch "E810")} 
+$GetNetAdapter=Get-ChildItem -Path $SDDCPath -Filter GetNetadapter.xml -Recurse -Depth 2 | Import-Clixml | Where-Object{($_.InterfaceDescription -imatch "QLogic") -or ($_.InterfaceDescription -imatch "Mellanox") -or ($_.InterfaceDescription -imatch "NVidia") -or ($_.InterfaceDescription -imatch "E810")} 
 $GetIPAddress=Get-ChildItem -Path $SDDCPath -Filter GetNetIpAddress.xml -Recurse -Depth 2 | Import-Clixml 
 $GetNetNeighbor=Get-ChildItem -Path $SDDCPath -Filter GetNetNeighbor.xml -Recurse -Depth 2 | Import-Clixml 
-$GetNetAdapterAdvancedProperty=Get-ChildItem -Path $SDDCPath -Filter GetNetAdapterAdvancedProperty.xml -Recurse -Depth 2 | Import-Clixml | Where-Object{($_.InterfaceDescription -imatch "QLogic") -or ($_.InterfaceDescription -imatch "Mellanox")  -or ($_.InterfaceDescription -imatch "NVidia") -or ($_.InterfaceDescription -imatch "E810")} 
+$GetNetAdapterAdvancedProperty=Get-ChildItem -Path $SDDCPath -Filter GetNetAdapterAdvancedProperty.xml -Recurse -Depth 2 | Import-Clixml | Where-Object{($_.InterfaceDescription -imatch "QLogic") -or ($_.InterfaceDescription -imatch "Mellanox") -or ($_.InterfaceDescription -imatch "NVidia") -or ($_.InterfaceDescription -imatch "E810")} 
 
     $Table=@()
     foreach($Neighbor in $GetNetNeighbor){
