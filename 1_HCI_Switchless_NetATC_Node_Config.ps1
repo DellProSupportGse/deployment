@@ -1,5 +1,5 @@
 ﻿#Configure Non-Converged Switchless with Network ATC
-#Version v1.1.2
+#Version v1.3
 #Varables
     $NodeName="AzHCI1"
         
@@ -54,7 +54,7 @@
         Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 35000 -Confirm:$false
         Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Transmit Buffers*" -DisplayValue 5000 -Confirm:$false
     }
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "Mellanox"){
+    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch 'Mellanox|NVIDIA'){
         Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
         Get-NetAdapter $S1Nic,$S2Nic | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 2048 -Confirm:$false
     }
@@ -72,7 +72,7 @@
     New-ItemProperty -Path HKLM:\system\currentcontrolset\services\clussvc\parameters -Name ExcludeAdaptersByDescription -Value $NDISDesc -Force
     
 #Set DcbxMode
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "Mellanox"){
+    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch 'Mellanox|NVIDIA'){
         Set-NetAdapterAdvancedProperty -Name $S1Nic -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
         Set-NetAdapterAdvancedProperty -Name $S2Nic -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
     }
@@ -81,7 +81,7 @@
     Set-NetQosDcbxSetting -Willing $false -Confirm:$false
 
 # RDMA QOS setting for Mellanox
-    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch "Mellanox" -or ((Get-PhysicalDisk | Where-Object{$_.MediaType -imatch 'HDD'}).count -eq 0)){
+    If((Get-NetAdapter $S1Nic,$S2Nic | Select InterfaceDescription) -imatch 'Mellanox|NVIDIA' -or ((Get-PhysicalDisk | Where-Object{$_.MediaType -imatch 'HDD'}).count -eq 0)){
         # Enable IEEE Priority Tag on all network interfaces to ensure the vSwitch does not drop the VLAN tag information.
     	    $nics  = Get-VMNetworkAdapter -ManagementOS
             ForEach ($nic in $nics) {
