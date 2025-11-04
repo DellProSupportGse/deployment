@@ -1,5 +1,5 @@
 ﻿#Reconfigure Fully Converged
-#Version 1.6.1
+#Version 1.7
 
 #Varables
     
@@ -75,7 +75,7 @@
         Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 35000 -Confirm:$false
         Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Transmit Buffers*" -DisplayValue 5000 -Confirm:$false
     }
-    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "Mellanox"){
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch 'Mellanox|NVIDIA'){
         Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Receive Buffers*" -DisplayValue 4096 -Confirm:$false
         Get-NetAdapter $MgmtNic1,$MgmtNic2 | Set-NetAdapterAdvancedProperty -DisplayName "Send Buffers*" -DisplayValue 2048 -Confirm:$false
     }
@@ -109,14 +109,14 @@
         Set-NetAdapterAdvancedProperty -Name $MgmtNic1 -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
         Set-NetAdapterAdvancedProperty -Name $MgmtNic2 -DisplayName 'NetworkDirect Technology' -DisplayValue 'iWarp' -Confirm:$false
     }        
-    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "Mellanox"){
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch 'Mellanox|NVIDIA'){
         Set-NetAdapterAdvancedProperty -Name $MgmtNic1 -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
         Set-NetAdapterAdvancedProperty -Name $MgmtNic2 -DisplayName 'DcbxMode' -DisplayValue 'Host In Charge' -Confirm:$false
         Set-NetAdapterAdvancedProperty -Name $MgmtNic1 -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false
         Set-NetAdapterAdvancedProperty -Name $MgmtNic2 -DisplayName 'NetworkDirect Technology' -DisplayValue 'RoCEv2' -Confirm:$false
     }
 # RDMA QOS setting for Mellanox
-    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "Mellanox" -or ((Get-PhysicalDisk | Where-Object{$_.MediaType -inotmatch 'HDD'}).count -eq 0)){
+    If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch 'Mellanox|NVIDIA' -or ((Get-PhysicalDisk | Where-Object{$_.MediaType -inotmatch 'HDD'}).count -eq 0)){
         # New QoS policy with a match condition set to 445 (TCP Port 445 is dedicated for SMB)
         # Arguments 3 and 5 to the PriorityValue8021Action parameter indicate the IEEE802.1p 
         # values for SMB and cluster traffic.
@@ -129,7 +129,7 @@
             Enable-NetQosFlowControl -Priority 3
             Disable-NetQosFlowControl -Priority 0,1,2,4,5,6,7
         # Enable QoS for the network adapter ports.
-            If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch "Mellanox"){
+            If((Get-NetAdapter $MgmtNic1,$MgmtNic2 | Select InterfaceDescription) -imatch 'Mellanox|NVIDIA'){
                 Get-NetAdapter $MgmtNic1,$MgmtNic2 | Enable-NetAdapterQos -Confirm:$false
             }
         # Disable DCBX Willing mode
