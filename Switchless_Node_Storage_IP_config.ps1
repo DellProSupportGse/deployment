@@ -1,6 +1,6 @@
 #Configure node IP addresses for switchless
 #Supports up to Four-node, dual-link full mesh
-#Version 1.2
+#Version 1.3
   param
  (
  [Parameter(Mandatory = $true)]
@@ -18,8 +18,8 @@
  $DualStorageIPAddress = 
 @('172.16.21','172.16.31','172.16.41','172.16.32','172.16.42','172.16.43')
  $StorageAddressPrefix = 29
- $supportedAdapters = @("Mellanox", "QLogic", "E810")
- $StorageAdapter = Get-NetAdapter | Where InterfaceDescription -Match ($supportedAdapters -Join "|") | ? Status -like Up | sort Name | Get-NetAdapterHardwareInfo | ? Slot -GE 1 | Sort-Object Slot,Function
+ $supportedAdapters = @("NVidia", "Mellanox", "QLogic", "E810")
+ $StorageAdapter = Get-NetAdapter | Where InterfaceDescription -imatch ($supportedAdapters -Join "|") | ? Status -like Up | sort Name | Get-NetAdapterHardwareInfo | ? Slot -GE 1 | Sort-Object Slot,Function
  if ( $StorageAdapter ) {
  Write-Output 'These adapters will be used for storage (dependent on cluster size):'
  Write-Output $($StorageAdapter | Format-Table Name,Description,Slot,Function)
@@ -66,4 +66,5 @@ $StorageSubnet) }
  throw "Not enough Storage NICs available based on cluster size of 
 $SwitchlessClusterNodes"
  }
+
 
