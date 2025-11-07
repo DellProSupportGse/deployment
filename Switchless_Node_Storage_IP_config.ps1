@@ -1,4 +1,5 @@
 #Configure node IP addresses for switchless
+#Supports up to Four-node, dual-link full mesh
 #Version 1.2
   param
  (
@@ -65,3 +66,4 @@ $StorageSubnet) }
  throw "Not enough Storage NICs available based on cluster size of 
 $SwitchlessClusterNodes"
  }
+
