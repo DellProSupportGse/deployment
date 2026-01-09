@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.17
+# v1.18
 #By: Jim Gandy
 ### Fill out this section before you run it :)###
 
@@ -16,7 +16,7 @@ $R = "YourResourceGroupName"
 $Z = "eastus"
 $T = "YourTenantID"
 $AGW = "" #Add you ARC gateway
-$X = "" # Leave this blank if no proxy is required
+$X = "" # Leave this blank if no proxy is required and DO NOT USE if using ARC Gateway
 $TV = "" # Populate this field if you need a specific version https://learn.microsoft.com/en-us/azure/azure-local/release-information-23h2?view=azloc-2507&tabs=OS-build-25398-xxxx#supported-versions-of-azure-local
 $F = "C:\dell"; New-Item $F -ItemType Directory -Force | Out-Null
 Start-Transcript -Path "$F\Setup-$(Get-Date -Format "yyyyMMdd-HHmmss").txt" -Append
