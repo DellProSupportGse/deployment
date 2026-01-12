@@ -66,7 +66,7 @@ Register-ScheduledTask -TaskName "DellAzureArcRegister" -Trigger (New-ScheduledT
     -Action (New-ScheduledTaskAction -Execute "Powershell.exe" -Argument "-ExecutionPolicy Bypass -File `"$A`"") `
     -RunLevel Highest -Force
 
-# Kernel Soft Reboot
+# Reboot
 if ((Read-Host "Ready to reboot? (Y/N)").Trim().ToUpper() -in @("Y", "YES")) {
     Stop-Transcript
     Restart-Computer -Force
