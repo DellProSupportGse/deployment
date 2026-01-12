@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.18
+# v1.19
 #By: Jim Gandy
 ### Fill out this section before you run it :)###
 
@@ -67,7 +67,7 @@ Register-ScheduledTask -TaskName "DellAzureArcRegister" -Trigger (New-ScheduledT
     -RunLevel Highest -Force
 
 # Kernel Soft Reboot
-if ((Read-Host "Ready to fast reboot? (Y/N)").Trim().ToUpper() -in @("Y", "YES")) {
+if ((Read-Host "Ready to reboot? (Y/N)").Trim().ToUpper() -in @("Y", "YES")) {
     Stop-Transcript
-    Start-Process "c:\windows\system32\ksrcmd.exe" -ArgumentList "/self" -NoNewWindow -Wait
+    Restart-Computer -Force
 } else { Stop-Transcript }
