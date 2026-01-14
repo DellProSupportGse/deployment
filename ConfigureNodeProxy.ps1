@@ -1,5 +1,5 @@
 # This configuration is used to set up the proxy across all locations on a Windows server to ensure the proxy functions properly.
-# Version 1.7
+# Version 1.8
 # By: Jim Gandy
 
  # Proxy variables
@@ -7,6 +7,35 @@
 		$ProxyServer="http://myproxyserver.com:8080" 
         # Please use CIDR notation for IP ranges EX: 192.168.1.1-254 = 192.168.1.0/24
 		$noproxylist="192.168.1.0/24,*.svc,localhost,127.0.0.1,*.DomainShortName.com,*.DomainFQDN.com,wacserver,nodeshort,nodefqdn,nodeipaddress,idracIPs,iSMiDRACIPs,infrastructureIps,ClusterShortName,ClusterFQDN"
+		<#
+		$noproxylist / Bypass List Requirements
+		The noproxylist (bypass) list must include the following to ensure proper outbound
+		connectivity for Azure Arc, Arc Resource Bridge, AKS, and future infrastructure services:
+		IP addresses:
+		- The IP address of each machine.
+		- The IP address of the cluster.
+		- The IP address of the WAC.
+		- The IP addresses defined for the infrastructure network
+		  (required by Arc Resource Bridge, AKS, and future services).
+		- Optionally, the entire infrastructure subnet may be bypassed.
+		- The subnets on which AKS clusters will be deployed.
+		- Required private address ranges for AKS clusters and Azure Arc agents:
+		  - 10.0.0.0/8
+		  - 172.16.0.0/12
+		  - 192.168.0.0/16
+		Hostnames:
+		- NetBIOS & FQDN name of each machine.
+		- NetBIOS & FQDN name of the cluster.
+		- NetBIOS & FQDN name of the WAC.
+		Domain names:
+		- Domain names or wildcard domain entries (using * or leading .)
+		  to match any host or subdomain.
+		Kubernetes internal service traffic:
+		- .svc
+		- kubernetes.default.svc
+		- .svc.cluster.local
+		#Ref: https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings-23h2?view=azloc-2512#environment-variables-proxy-bypass-list-string-considerations
+		#>
 
     # Check for semicolan(;) delimitation and change the comma(,)
     $noproxylist = $noproxylist -replace ";",","
@@ -47,10 +76,7 @@
     	Write-Host "Converting CIDR to Wildcard..."
 	$cidrnoproxylist = $noproxylist
     $NoProxyList = Convert-CidrInListToWildcard $noproxylist
-	#Ref: https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings-23h2?view=azloc-2512#environment-variables-proxy-bypass-list-string-considerations
 	$cidrnoproxylist = $cidrnoproxylist -replace "\*"
-	#added for kuberbetes support
-	$cidrnoproxylist += ",kubernetes.default.svc,.svc.cluster.local,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
 	Write-Host "CIDR:" $cidrnoproxylist
  	Write-host "Wildcard:" $noproxylist
     }
