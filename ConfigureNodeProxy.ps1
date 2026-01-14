@@ -34,7 +34,7 @@
 		- .svc
 		- kubernetes.default.svc
 		- .svc.cluster.local
-		#Ref: https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings-23h2?view=azloc-2512#environment-variables-proxy-bypass-list-string-considerations
+		#Ref: https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings-23h2?view=azloc-2512
 		#>
 
     # Check for semicolan(;) delimitation and change the comma(,)
