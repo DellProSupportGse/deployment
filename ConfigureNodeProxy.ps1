@@ -1,5 +1,5 @@
 # This configuration is used to set up the proxy across all locations on a Windows server to ensure the proxy functions properly.
-# Version 1.8
+# Version 1.9
 # By: Jim Gandy
 
  # Proxy variables
@@ -129,8 +129,9 @@
 		Set-Location c:\dell\
 		IF(!(Get-Command Set-WinInetProxy)){
 			Write-Host "        WARN: wininetproxy is NOT installed." -ForegroundColor Yellow
-			IF (Test-Path .\wininetproxy.0.1.0.nupkg.zip) {
+			IF (Test-Path .\wininetproxy.0.1.0.nupkg) {
 				Write-Host "        Found wininetproxy in c:dell importing..."
+				Rename-item .\wininetproxy.0.1.0.nupkg -NewName .\wininetproxy.0.1.0.nupkg.zip
 				Expand-Archive .\wininetproxy.0.1.0.nupkg.zip -Force
 				Set-Location .\wininetproxy.0.1.0.nupkg\
 				Import-Module .\WinInetProxy.psd1
