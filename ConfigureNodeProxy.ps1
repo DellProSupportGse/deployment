@@ -1,5 +1,5 @@
 # This configuration is used to set up the proxy across all locations on a Windows server to ensure the proxy functions properly.
-# Version 1.6
+# Version 1.7
 # By: Jim Gandy
 
  # Proxy variables
@@ -46,8 +46,11 @@
     if ($noproxylist -match '\d{1,3}(\.\d{1,3}){3}/\d{1,2}') {
     	Write-Host "Converting CIDR to Wildcard..."
 	$cidrnoproxylist = $noproxylist
-        $NoProxyList = Convert-CidrInListToWildcard $noproxylist
-		$cidrnoproxylist = $cidrnoproxylist -replace "*"
+    $NoProxyList = Convert-CidrInListToWildcard $noproxylist
+	#Ref: https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings-23h2?view=azloc-2512#environment-variables-proxy-bypass-list-string-considerations
+	$cidrnoproxylist = $cidrnoproxylist -replace "\*"
+	#added for kuberbetes support
+	$cidrnoproxylist += ",kubernetes.default.svc,.svc.cluster.local,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
 	Write-Host "CIDR:" $cidrnoproxylist
  	Write-host "Wildcard:" $noproxylist
     }
