@@ -1,5 +1,5 @@
 # This configuration is used to set up the proxy across all locations on a Windows server to ensure the proxy functions properly.
-# Version 1.5
+# Version 1.6
 # By: Jim Gandy
 
  # Proxy variables
@@ -47,6 +47,7 @@
     	Write-Host "Converting CIDR to Wildcard..."
 	$cidrnoproxylist = $noproxylist
         $NoProxyList = Convert-CidrInListToWildcard $noproxylist
+		$cidrnoproxylist = $cidrnoproxylist -replace "*"
 	Write-Host "CIDR:" $cidrnoproxylist
  	Write-host "Wildcard:" $noproxylist
     }
