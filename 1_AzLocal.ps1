@@ -1,5 +1,5 @@
 # Configure Node & Azure Arc Settings
-# v1.19
+# v1.20
 #By: Jim Gandy
 ### Fill out this section before you run it :)###
 
@@ -51,7 +51,7 @@ Invoke-AzStackHciArcInitialization -SubscriptionID `"$S`" -ResourceGroup `"$R`" 
 "@}
 if ($TV){
 $C += @"
- -TargetSolutionVersion `$TV
+ -TargetSolutionVersion `"$TV`"
 "@
 }
 $C += @"
