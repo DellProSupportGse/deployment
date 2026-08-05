@@ -35,7 +35,7 @@
             Pause
             
         #Create cluster
-            New-Cluster -Name $ClusterName -Node $ClusterNodes -StaticAddress $ClusterIP
+            New-Cluster -Name $ClusterName -Node $ClusterNodes -StaticAddress $ClusterIP -NoStorage
     }
     
     # Exclude iDRAC NIC from Cluster
