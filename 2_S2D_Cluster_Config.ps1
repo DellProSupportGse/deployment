@@ -24,7 +24,7 @@
     #NOTE: Make sure all errors are resolved before proceeding
             
 #Create cluster
-    New-Cluster -Name $ClusterName -Node $ClusterNodes -StaticAddress $ClusterIP
+    New-Cluster -Name $ClusterName -Node $ClusterNodes -StaticAddress $ClusterIP -NoStorage
     
 # Exclude iDRAC NIC from Cluster
     $NDISDesc=(Get-NetAdapter | Where-Object{$_.InterfaceDescription -imatch "NDIS"}).InterfaceDescription
