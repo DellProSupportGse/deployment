@@ -22,6 +22,9 @@
         $S1vlan="21"
         $S2vlan="31"
 
+#Install Roles
+    Install-WindowsFeature -Name Hyper-V,Failover-Clustering,Data-Center-Bridging,BitLocker -IncludeManagementTools -IncludeAllSubFeature -Confirm:$false
+	
 #Sets vLAN ID for Mgmt
    IF($Mgmtvlan -ne ""){Set-NetAdapter -InterfaceAlias $MgmtNic1 -VlanId $Mgmtvlan -Confirm:$false}
    Set-NetAdapter -Name $S1Nic -VlanID $S1vlan -Confirm:$false
